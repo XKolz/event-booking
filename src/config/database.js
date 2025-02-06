@@ -1,16 +1,9 @@
 // src/config/database.js
 require("dotenv").config();
 const knex = require("knex");
+const knexConfig = require("../../knexfile");
 
-const db = knex({
-  client: "pg",
-  connection: process.env.DATABASE_URL || {
-    host: "localhost",
-    user: "postgres",
-    password: "",
-    database: "ticket_booking",
-  },
-  pool: { min: 2, max: 10 },
-});
+const environment = process.env.NODE_ENV;
+const db = knex(knexConfig[environment]);
 
 module.exports = db;
