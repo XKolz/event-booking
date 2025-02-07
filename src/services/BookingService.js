@@ -3,15 +3,14 @@ const db = require("../config/database");
 const Event = require("../models/Event");
 const Booking = require("../models/Booking");
 const WaitingList = require("../models/WaitingList");
+const AppError = require("../utils/AppError");
 
 class BookingService {
   static async initialize(name, totalTickets) {
-    // return Event.create(name, totalTickets);
     if (totalTickets <= 0) {
-      throw new Error("Total tickets must be greater than 0");
+      throw new AppError("Total tickets must be greater than 0");
     }
     return Event.create(name, totalTickets);
-    // }
   }
 
   static async bookTicket(eventId, userId) {
@@ -19,7 +18,7 @@ class BookingService {
       const event = await Event.findById(eventId);
 
       if (!event) {
-        throw new Error("Event not found");
+        throw new AppError("Event not found");
       }
 
       if (event.available_tickets > 0) {
@@ -43,7 +42,7 @@ class BookingService {
       const booking = await Booking.cancel(eventId, userId);
 
       if (!booking) {
-        throw new Error("Booking not found");
+        throw new AppError("Booking not found");
       }
 
       const event = await Event.findById(eventId);
@@ -71,7 +70,7 @@ class BookingService {
     const event = await Event.findById(eventId);
 
     if (!event) {
-      throw new Error("Event not found");
+      throw new AppError("Event not found");
     }
 
     const waitingListCount = await db("waiting_list")
@@ -92,7 +91,7 @@ class BookingService {
     const event = await Event.findById(eventId);
 
     if (!event) {
-      throw new Error("Event not found");
+      throw new AppError("Event not found");
     }
 
     const bookings = await db("bookings")
@@ -114,7 +113,7 @@ class BookingService {
     const event = await Event.findById(eventId);
 
     if (!event) {
-      throw new Error("Event not found");
+      throw new AppError("Event not found");
     }
 
     const waitingList = await db("waiting_list")

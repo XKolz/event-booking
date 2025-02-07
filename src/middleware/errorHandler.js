@@ -1,15 +1,16 @@
 // src/middleware/errorHandler.js
+const AppError = require("../utils/AppError");
+
 function errorHandler(err, req, res, next) {
-  console.error(err);
+  console.error("Error:", err);
 
-  if (
-    err.message === "Event not found" ||
-    err.message === "Booking not found"
-  ) {
-    return res.status(404).json({ error: err.message });
-  }
+  const statusCode = err.statusCode || 500;
+  const message = err.message || "Internal server error";
 
-  res.status(500).json({ error: "Internal server error" });
+  res.status(statusCode).json({
+    success: false,
+    error: message,
+  });
 }
 
 module.exports = errorHandler;

@@ -1,68 +1,44 @@
 // src/controllers/EventController.js
 const BookingService = require("../services/BookingService");
+const { successResponse } = require("../utils/responseHandler");
+const asyncHandler = require("../middleware/asyncHandler");
 
 class EventController {
-  static async initialize(req, res, next) {
-    try {
-      const { name, totalTickets } = req.body;
-      const event = await BookingService.initialize(name, totalTickets);
-      res.status(201).json(event);
-    } catch (error) {
-      next(error);
-    }
-  }
+  static initialize = asyncHandler(async (req, res) => {
+    const { name, totalTickets } = req.body;
+    const event = await BookingService.initialize(name, totalTickets);
+    successResponse(res, 201, "Event initialized successfully", event);
+  });
 
-  static async book(req, res, next) {
-    try {
-      const { eventId, userId } = req.body;
-      const result = await BookingService.bookTicket(eventId, userId);
-      res.status(201).json(result);
-    } catch (error) {
-      next(error);
-    }
-  }
+  static book = asyncHandler(async (req, res) => {
+    const { eventId, userId } = req.body;
+    const result = await BookingService.bookTicket(eventId, userId);
+    successResponse(res, 201, "Booking successful", result);
+  });
 
-  static async cancel(req, res, next) {
-    try {
-      const { eventId, userId } = req.body;
-      const result = await BookingService.cancelBooking(eventId, userId);
-      res.json(result);
-    } catch (error) {
-      next(error);
-    }
-  }
+  static cancel = asyncHandler(async (req, res) => {
+    const { eventId, userId } = req.body;
+    const result = await BookingService.cancelBooking(eventId, userId);
+    successResponse(res, 200, "Booking canceled successfully", result);
+  });
 
-  static async status(req, res, next) {
-    try {
-      const { eventId } = req.params;
-      const status = await BookingService.getEventStatus(eventId);
-      res.json(status);
-    } catch (error) {
-      next(error);
-    }
-  }
-  //
-  // New controller methods
-  static async getAvailableTickets(req, res, next) {
-    try {
-      const { eventId } = req.params;
-      const tickets = await BookingService.getAvailableTickets(eventId);
-      res.json(tickets);
-    } catch (error) {
-      next(error);
-    }
-  }
+  static status = asyncHandler(async (req, res) => {
+    const { eventId } = req.params;
+    const status = await BookingService.getEventStatus(eventId);
+    successResponse(res, 200, "Event status retrieved", status);
+  });
 
-  static async getWaitingList(req, res, next) {
-    try {
-      const { eventId } = req.params;
-      const waitingList = await BookingService.getWaitingList(eventId);
-      res.json(waitingList);
-    } catch (error) {
-      next(error);
-    }
-  }
-  // }
+  static getAvailableTickets = asyncHandler(async (req, res) => {
+    const { eventId } = req.params;
+    const tickets = await BookingService.getAvailableTickets(eventId);
+    successResponse(res, 200, "Available tickets retrieved", tickets);
+  });
+
+  static getWaitingList = asyncHandler(async (req, res) => {
+    const { eventId } = req.params;
+    const waitingList = await BookingService.getWaitingList(eventId);
+    successResponse(res, 200, "Waiting list retrieved", waitingList);
+  });
 }
 
 module.exports = EventController;
